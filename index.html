@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice Aura | Telechargement Windows</title>
+    <meta
+      name="description"
+      content="Telechargez Voice Aura pour Windows. STT local FR/EN, OSC VRChat, AI Studio, logs integres, build Electron propre et installation directe."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #f6f6f4;
+        --bg-soft: #ffffff;
+        --bg-elevated: rgba(255, 255, 255, 0.76);
+        --fg: #111315;
+        --fg-muted: #5f6770;
+        --border: rgba(17, 19, 21, 0.1);
+        --border-strong: rgba(17, 19, 21, 0.18);
+        --accent: #0d6efd;
+        --accent-soft: rgba(13, 110, 253, 0.12);
+        --accent-strong: #0a5bd4;
+        --shadow-lg: 0 28px 80px rgba(17, 19, 21, 0.12);
+        --shadow-md: 0 16px 36px rgba(17, 19, 21, 0.09);
+        --radius-xl: 30px;
+        --radius-lg: 22px;
+        --radius-md: 16px;
+        --max-width: 1180px;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Inter", system-ui, sans-serif;
+        color: var(--fg);
+        background:
+          radial-gradient(circle at top left, rgba(13, 110, 253, 0.12), transparent 28%),
+          radial-gradient(circle at 85% 24%, rgba(13, 110, 253, 0.1), transparent 24%),
+          linear-gradient(180deg, #f8f8f6 0%, #f1f1ee 100%);
+        overflow-x: hidden;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      button {
+        font: inherit;
+      }
+
+      .pointer-aura {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(13, 110, 253, 0.15), transparent 70%);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        z-index: 0;
+        transition: opacity 180ms ease;
+        opacity: 0.9;
+        mix-blend-mode: multiply;
+      }
+
+      .site-shell {
+        position: relative;
+        z-index: 1;
+        width: min(var(--max-width), calc(100% - 32px));
+        margin: 18px auto 32px;
+      }
+
+      .site-header {
+        position: sticky;
+        top: 14px;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 24px;
+        padding: 16px 20px;
+        border: 1px solid rgba(255, 255, 255, 0.65);
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(18px);
+        box-shadow: 0 14px 40px rgba(17, 19, 21, 0.06);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 800;
+        letter-spacing: 0.04em;
+      }
+
+      .brand svg {
+        width: 34px;
+        height: 34px;
+        flex: none;
+      }
+
+      .nav-links {
+        display: inline-flex;
+        align-items: center;
+        gap: 24px;
+        color: var(--fg-muted);
+        font-size: 14px;
+      }
+
+      .nav-links a {
+        position: relative;
+      }
+
+      .nav-links a::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 100%;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: center;
+        transition: transform 180ms ease;
+      }
+
+      .nav-links a:hover::after,
+      .nav-links a:focus-visible::after {
+        transform: scaleX(1);
+      }
+
+      .header-actions {
+        display: inline-flex;
+        gap: 10px;
+      }
+
+      .pill-button,
+      .primary-button,
+      .secondary-button,
+      .ghost-button {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        min-height: 48px;
+        padding: 0 18px;
+        border-radius: 16px;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition:
+          transform 180ms ease,
+          box-shadow 180ms ease,
+          border-color 180ms ease,
+          background 180ms ease,
+          color 180ms ease;
+      }
+
+      .pill-button:hover,
+      .primary-button:hover,
+      .secondary-button:hover,
+      .ghost-button:hover {
+        transform: translateY(-1px);
+      }
+
+      .primary-button {
+        color: #ffffff;
+        background: linear-gradient(135deg, #0f1111, #121518 54%, #0d6efd 140%);
+        box-shadow: 0 18px 38px rgba(17, 19, 21, 0.2);
+      }
+
+      .secondary-button {
+        color: var(--fg);
+        background: rgba(255, 255, 255, 0.74);
+        border-color: var(--border);
+      }
+
+      .ghost-button {
+        color: var(--fg);
+        background: transparent;
+        border-color: var(--border);
+      }
+
+      .hero {
+        position: relative;
+        padding: 88px 0 48px;
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1.05fr) minmax(380px, 0.95fr);
+        gap: 34px;
+        align-items: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        border: 1px solid rgba(17, 19, 21, 0.08);
+        color: var(--fg-muted);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .eyebrow-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 8px rgba(13, 110, 253, 0.14);
+      }
+
+      .hero h1 {
+        margin: 20px 0 18px;
+        font-family: "Instrument Serif", Georgia, serif;
+        font-size: clamp(3.4rem, 7vw, 6.2rem);
+        line-height: 0.92;
+        letter-spacing: -0.05em;
+        max-width: 10ch;
+      }
+
+      .hero p {
+        max-width: 60ch;
+        margin: 0;
+        color: var(--fg-muted);
+        font-size: 17px;
+        line-height: 1.7;
+      }
+
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 30px;
+      }
+
+      .hero-meta {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 32px;
+      }
+
+      .meta-card,
+      .feature-card,
+      .step-card,
+      .faq-card,
+      .download-card,
+      .signal-card {
+        position: relative;
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, 0.9);
+        background: var(--bg-elevated);
+        backdrop-filter: blur(16px);
+        box-shadow: var(--shadow-md);
+      }
+
+      .meta-card {
+        padding: 18px;
+      }
+
+      .meta-label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 12px;
+        color: var(--fg-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+
+      .meta-value {
+        font-size: 1.05rem;
+        font-weight: 700;
+      }
+
+      .hero-stage {
+        position: relative;
+        min-height: 640px;
+        display: grid;
+        place-items: center;
+      }
+
+      .wave-band {
+        position: absolute;
+        inset: 48% -18% auto;
+        height: 220px;
+        transform: translateY(-50%);
+        background:
+          radial-gradient(circle, rgba(0, 0, 0, 0.84) 1px, transparent 1.2px) 0 0 / 7px 7px,
+          linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.9) 20%, rgba(0, 0, 0, 0.92) 50%, rgba(0, 0, 0, 0.9) 80%, transparent 100%);
+        opacity: 0.86;
+        mask: radial-gradient(circle at center, rgba(0, 0, 0, 1) 0, rgba(0, 0, 0, 1) 40%, transparent 80%);
+        pointer-events: none;
+        filter: blur(0.3px);
+      }
+
+      .wave-band::before,
+      .wave-band::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle, rgba(0, 0, 0, 0.9) 1px, transparent 1.3px) 0 0 / 7px 7px,
+          linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.95) 16%, rgba(0, 0, 0, 0.88) 48%, rgba(0, 0, 0, 0.95) 84%, transparent 100%);
+        mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 240' preserveAspectRatio='none'%3E%3Cpath d='M0 114C70 35 140 194 210 114C280 35 350 194 420 114C490 35 560 194 630 114C700 35 770 194 840 114C910 35 980 194 1050 114C1120 35 1190 194 1260 114C1330 35 1400 194 1470 114C1540 35 1610 194 1680 114V240H0Z' fill='black'/%3E%3C/svg%3E") center / cover no-repeat;
+        opacity: 0.74;
+      }
+
+      .wave-band::after {
+        transform: scaleY(-1);
+      }
+
+      .installer-card {
+        position: relative;
+        width: min(100%, 530px);
+        padding: 18px;
+        border-radius: 28px;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.92);
+        box-shadow: 0 28px 80px rgba(17, 19, 21, 0.16);
+        backdrop-filter: blur(24px);
+        transform-style: preserve-3d;
+        transition: transform 180ms ease;
+      }
+
+      .installer-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+
+      .tabs {
+        display: inline-flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      .tab {
+        padding: 9px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        background: rgba(13, 110, 253, 0.08);
+        border: 1px solid rgba(13, 110, 253, 0.14);
+      }
+
+      .tab.muted {
+        color: var(--fg-muted);
+        background: transparent;
+        border-color: transparent;
+      }
+
+      .installer-panel {
+        margin-top: 18px;
+        padding: 20px;
+        border-radius: 22px;
+        background: linear-gradient(180deg, rgba(244, 246, 248, 0.98), rgba(235, 238, 241, 0.92));
+        border: 1px solid rgba(17, 19, 21, 0.06);
+      }
+
+      .installer-panel h2 {
+        margin: 0;
+        font-size: 1.1rem;
+      }
+
+      .installer-panel p {
+        margin: 8px 0 0;
+        color: var(--fg-muted);
+        line-height: 1.65;
+      }
+
+      .signal-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .signal-card {
+        padding: 10px 12px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.78);
+        font-size: 12px;
+        color: var(--fg-muted);
+      }
+
+      .signal-card strong {
+        color: var(--fg);
+      }
+
+      .progress-shell {
+        margin-top: 20px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .progress-meta {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 13px;
+        color: var(--fg-muted);
+      }
+
+      .progress-meta strong {
+        color: var(--fg);
+      }
+
+      .progress-track {
+        height: 13px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: rgba(17, 19, 21, 0.08);
+      }
+
+      .progress-bar {
+        width: 22%;
+        height: 100%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, #0d6efd, #52a6ff);
+        box-shadow: 0 0 30px rgba(13, 110, 253, 0.4);
+        transition: width 280ms ease;
+      }
+
+      .terminal-log {
+        margin-top: 16px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: #101315;
+        color: #f1f4f8;
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.7;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      }
+
+      .terminal-log span {
+        display: block;
+      }
+
+      .terminal-log .accent {
+        color: #8bc1ff;
+      }
+
+      .terminal-log .success {
+        color: #9ff1c3;
+      }
+
+      .terminal-log .muted {
+        color: #8a949e;
+      }
+
+      .section {
+        padding: 40px 0;
+      }
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: end;
+        margin-bottom: 20px;
+      }
+
+      .section-header h2 {
+        margin: 0;
+        font-family: "Instrument Serif", Georgia, serif;
+        font-size: clamp(2rem, 4vw, 3.3rem);
+        font-weight: 400;
+        letter-spacing: -0.04em;
+      }
+
+      .section-header p {
+        margin: 0;
+        max-width: 52ch;
+        color: var(--fg-muted);
+        line-height: 1.7;
+      }
+
+      .feature-grid,
+      .steps-grid,
+      .requirements-grid,
+      .faq-grid {
+        display: grid;
+        gap: 18px;
+      }
+
+      .feature-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .steps-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .requirements-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+
+      .faq-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .feature-card,
+      .step-card,
+      .download-card,
+      .faq-card {
+        padding: 22px;
+      }
+
+      .feature-card:hover,
+      .step-card:hover,
+      .download-card:hover,
+      .faq-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-lg);
+      }
+
+      .feature-index,
+      .step-index {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .feature-card h3,
+      .step-card h3,
+      .download-card h3,
+      .faq-card h3 {
+        margin: 16px 0 10px;
+        font-size: 1.05rem;
+      }
+
+      .feature-card p,
+      .step-card p,
+      .download-card p,
+      .faq-card p,
+      .faq-card summary {
+        margin: 0;
+        color: var(--fg-muted);
+        line-height: 1.7;
+      }
+
+      .download-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: 18px;
+      }
+
+      .download-card.primary {
+        background: linear-gradient(145deg, rgba(255, 255, 255, 0.85), rgba(235, 241, 252, 0.92));
+      }
+
+      .download-link {
+        display: block;
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 18px;
+        background: rgba(17, 19, 21, 0.04);
+        border: 1px solid rgba(17, 19, 21, 0.08);
+        font-family: "JetBrains Mono", monospace;
+        font-size: 12px;
+        line-height: 1.75;
+        color: var(--fg);
+        word-break: break-all;
+      }
+
+      .faq-card details {
+        border-radius: 18px;
+      }
+
+      .faq-card summary {
+        list-style: none;
+        cursor: pointer;
+        font-weight: 700;
+        color: var(--fg);
+      }
+
+      .faq-card summary::-webkit-details-marker {
+        display: none;
+      }
+
+      .faq-card details p {
+        margin-top: 12px;
+      }
+
+      .status-strip {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .status-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.72);
+        border: 1px solid rgba(17, 19, 21, 0.08);
+        color: var(--fg-muted);
+        font-size: 13px;
+      }
+
+      .status-pill::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 0 6px rgba(13, 110, 253, 0.12);
+      }
+
+      .footer {
+        padding: 30px 0 60px;
+        color: var(--fg-muted);
+        font-size: 14px;
+      }
+
+      .footer-inner {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        align-items: center;
+      }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 520ms ease, transform 520ms cubic-bezier(0.16, 1, 0.3, 1);
+      }
+
+      .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      @media (max-width: 1080px) {
+        .hero-grid,
+        .download-grid,
+        .requirements-grid,
+        .feature-grid,
+        .steps-grid,
+        .faq-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .hero-stage {
+          min-height: auto;
+          padding-top: 36px;
+        }
+
+        .wave-band {
+          inset: 52% -6% auto;
+        }
+      }
+
+      @media (max-width: 860px) {
+        .site-header {
+          border-radius: 28px;
+          flex-wrap: wrap;
+        }
+
+        .nav-links {
+          order: 3;
+          width: 100%;
+          justify-content: space-between;
+        }
+
+        .hero {
+          padding-top: 52px;
+        }
+
+        .hero h1 {
+          max-width: none;
+        }
+
+        .hero-meta {
+          grid-template-columns: 1fr;
+        }
+
+        .section-header,
+        .footer-inner {
+          flex-direction: column;
+          align-items: start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .site-shell {
+          width: min(var(--max-width), calc(100% - 20px));
+        }
+
+        .site-header {
+          padding: 14px;
+        }
+
+        .header-actions,
+        .hero-actions {
+          width: 100%;
+          flex-direction: column;
+        }
+
+        .pill-button,
+        .primary-button,
+        .secondary-button,
+        .ghost-button {
+          width: 100%;
+        }
+
+        .installer-card,
+        .feature-card,
+        .step-card,
+        .download-card,
+        .faq-card,
+        .meta-card {
+          border-radius: 22px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="pointer-aura" aria-hidden="true"></div>
+
+    <div class="site-shell">
+      <header class="site-header">
+        <a class="brand" href="#top" aria-label="Voice Aura accueil">
+          <svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <rect x="6" y="6" width="116" height="116" rx="30" fill="#0f1111" />
+            <rect x="14" y="14" width="100" height="100" rx="24" fill="#171a1b" />
+            <circle cx="64" cy="64" r="23" fill="#0d6efd" opacity="0.18" />
+            <path d="M33 64c0-18.2 14.8-33 33-33" fill="none" stroke="#5aa4ff" stroke-linecap="round" stroke-width="7" />
+            <path d="M95 64c0 18.2-14.8 33-33 33" fill="none" stroke="#5aa4ff" stroke-linecap="round" stroke-width="7" />
+            <path d="M44 64c0-11 9-20 20-20" fill="none" stroke="#8bc1ff" stroke-linecap="round" stroke-width="6" />
+            <path d="M84 64c0 11-9 20-20 20" fill="none" stroke="#8bc1ff" stroke-linecap="round" stroke-width="6" />
+            <rect x="47" y="42" width="8" height="44" rx="4" fill="#f6f7f8" />
+            <rect x="60" y="34" width="8" height="60" rx="4" fill="#f6f7f8" />
+            <rect x="73" y="48" width="8" height="32" rx="4" fill="#f6f7f8" />
+          </svg>
+          <span>VOICE AURA</span>
+        </a>
+
+        <nav class="nav-links" aria-label="Navigation principale">
+          <a href="#features">Fonctionnalites</a>
+          <a href="#download">Telechargement</a>
+          <a href="#install">Installation</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+
+        <div class="header-actions">
+          <button class="ghost-button" id="copy-header-link" type="button">Copier le lien</button>
+          <a
+            class="primary-button"
+            href="https://github.com/ErrorNoName/VoiceAura/releases/download/v1.1.0/VoiceAura-1.0.0-Setup.exe"
+            target="_blank"
+            rel="noreferrer"
+            data-download
+          >
+            Telecharger
+          </a>
+        </div>
+      </header>
+
+      <main id="top">
+        <section class="hero reveal">
+          <div class="hero-grid">
+            <div>
+              <div class="eyebrow">
+                <span class="eyebrow-dot" aria-hidden="true"></span>
+                INSTALLATEUR WINDOWS 64-BIT
+              </div>
+              <h1>Telechargez Voice Aura et parlez plus vite que vous n'ecrivez.</h1>
+              <p>
+                Voice Aura est un logiciel desktop pour VRChat qui combine speech-to-text local FR/EN,
+                envoi OSC, AI Studio, logs integres et build Electron. Le coeur du flux vocal reste rapide,
+                lisible et fait pour une vraie utilisation Windows.
+              </p>
+
+              <div class="hero-actions">
+                <a
+                  class="primary-button"
+                  href="https://github.com/ErrorNoName/VoiceAura/releases/download/v1.1.0/VoiceAura-1.0.0-Setup.exe"
+                  target="_blank"
+                  rel="noreferrer"
+                  data-download
+                >
+                  Telecharger Voice Aura 1.0.0
+                </a>
+                <button class="secondary-button" id="copy-hero-link" type="button">Copier l'URL directe</button>
+              </div>
+
+              <div class="hero-meta">
+                <article class="meta-card">
+                  <span class="meta-label">Format</span>
+                  <div class="meta-value">Installateur Windows `.exe`</div>
+                </article>
+                <article class="meta-card">
+                  <span class="meta-label">Pile</span>
+                  <div class="meta-value">Electron + STT local + OSC VRChat</div>
+                </article>
+                <article class="meta-card">
+                  <span class="meta-label">Acces</span>
+                  <div class="meta-value">Gratuit, installation directe, sans compte</div>
+                </article>
+              </div>
+
+              <div class="status-strip" aria-label="Etat du produit">
+                <div class="status-pill">FR/EN local</div>
+                <div class="status-pill">AI Studio optionnel</div>
+                <div class="status-pill">Logs de diagnostic integres</div>
+                <div class="status-pill" id="download-counter">Clics locaux detectes : 0</div>
+              </div>
+            </div>
+
+            <div class="hero-stage">
+              <div class="wave-band" aria-hidden="true"></div>
+
+              <article class="installer-card" id="tilt-card">
+                <div class="installer-topbar">
+                  <div class="tabs">
+                    <span class="tab">Windows Build</span>
+                    <span class="tab muted">VRChat Ready</span>
+                  </div>
+                  <button class="ghost-button" id="simulate-install" type="button">Simuler</button>
+                </div>
+
+                <div class="installer-panel">
+                  <h2>Pack desktop propre, telechargement direct GitHub</h2>
+                  <p>
+                    Le site suit le theme editorial de Voice Aura, pendant que cette carte simule le rythme du logiciel:
+                    installation Windows, assets locaux, puis lancement pret pour VRChat.
+                  </p>
+
+                  <div class="signal-row">
+                    <span class="signal-card"><strong>Build:</strong> Electron release</span>
+                    <span class="signal-card"><strong>STT:</strong> vosk local FR/EN</span>
+                    <span class="signal-card"><strong>Voix:</strong> cloud, local, systeme</span>
+                  </div>
+
+                  <div class="progress-shell">
+                    <div class="progress-meta">
+                      <span id="progress-label">Prechargement de l'installateur</span>
+                      <strong id="progress-value">22%</strong>
+                    </div>
+                    <div class="progress-track" aria-hidden="true">
+                      <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                  </div>
+
+                  <div class="terminal-log" id="terminal-log" aria-live="polite">
+                    <span><span class="accent">[voice-aura]</span> preparation du package Windows x64</span>
+                    <span><span class="accent">[stt]</span> modeles locaux FR/EN prets a l'emploi</span>
+                    <span class="muted">[hint] clic sur Telecharger pour ouvrir le lien GitHub officiel</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section class="section reveal" id="features">
+          <div class="section-header">
+            <div>
+              <h2>Le theme du logiciel, mais pour le telechargement</h2>
+            </div>
+            <p>
+              Meme direction visuelle: fond clair editorial, accent bleu technique, typographie serif assumee,
+              et des surfaces propres qui donnent tout de suite une impression de produit fini.
+            </p>
+          </div>
+
+          <div class="feature-grid">
+            <article class="feature-card">
+              <span class="feature-index">01</span>
+              <h3>Speech-to-text local</h3>
+              <p>Francais et anglais avec assets embarques, pour garder un flux vocal rapide sans dependre du cloud.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-index">02</span>
+              <h3>OSC VRChat natif</h3>
+              <p>Le logiciel envoie vers la chatbox VRChat via OSC, avec une base pensee pour un usage en session.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-index">03</span>
+              <h3>AI Studio integre</h3>
+              <p>Providers cloud, test de clef API, voix cloud/local/systeme, et pipeline de reponse pense pour la parole.</p>
+            </article>
+            <article class="feature-card">
+              <span class="feature-index">04</span>
+              <h3>Logs utiles</h3>
+              <p>Diagnostics visibles pour savoir si la capture, le STT, la voix et l'envoi fonctionnent vraiment.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section reveal" id="download">
+          <div class="section-header">
+            <div>
+              <h2>Telechargement direct</h2>
+            </div>
+            <p>
+              Cette page pointe vers la release GitHub officielle. Pas de formulaire, pas d'etape cachee, juste un acces direct au setup Windows.
+            </p>
+          </div>
+
+          <div class="download-grid">
+            <article class="download-card primary">
+              <span class="meta-label">Release ciblee</span>
+              <h3>Voice Aura 1.0.0</h3>
+              <p>
+                Installez la version desktop du logiciel avec son theme, son shell Electron, ses modeles locaux et sa surface Voice Aura complete.
+              </p>
+              <a
+                class="primary-button"
+                href="https://github.com/ErrorNoName/VoiceAura/releases/download/v1.1.0/VoiceAura-1.0.0-Setup.exe"
+                target="_blank"
+                rel="noreferrer"
+                data-download
+                style="margin-top: 18px;"
+              >
+                Lancer le telechargement
+              </a>
+              <div class="download-link" id="download-link-text">
+                https://github.com/ErrorNoName/VoiceAura/releases/download/v1.1.0/VoiceAura-1.0.0-Setup.exe
+              </div>
+            </article>
+
+            <article class="download-card">
+              <span class="meta-label">Prerequis rapides</span>
+              <h3>Avant de lancer l'exe</h3>
+              <p>Windows 10/11, VRChat avec OSC active si vous voulez l'envoi chatbox, et un micro si vous utilisez le mode vocal.</p>
+              <div class="signal-row">
+                <span class="signal-card"><strong>OS:</strong> Windows x64</span>
+                <span class="signal-card"><strong>Usage:</strong> VRChat + desktop</span>
+                <span class="signal-card"><strong>Optionnel:</strong> clefs API AI</span>
+              </div>
+              <div class="hero-actions" style="margin-top: 18px;">
+                <button class="secondary-button" id="copy-download-link" type="button">Copier le lien</button>
+                <a class="ghost-button" href="#install">Voir les etapes</a>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="section reveal" id="install">
+          <div class="section-header">
+            <div>
+              <h2>Installation en 3 etapes</h2>
+            </div>
+            <p>
+              La page reste simple: vous telechargez l'exe, vous installez, puis vous ouvrez Voice Aura avec le meme ton visuel que celui montre ici.
+            </p>
+          </div>
+
+          <div class="steps-grid">
+            <article class="step-card">
+              <span class="step-index">1</span>
+              <h3>Telecharger l'executable</h3>
+              <p>Cliquez sur le bouton principal. La release GitHub ouvre directement le setup Windows de Voice Aura.</p>
+            </article>
+            <article class="step-card">
+              <span class="step-index">2</span>
+              <h3>Installer le logiciel</h3>
+              <p>Lancez le setup, laissez Windows terminer l'installation, puis ouvrez Voice Aura depuis son raccourci.</p>
+            </article>
+            <article class="step-card">
+              <span class="step-index">3</span>
+              <h3>Configurer votre flux</h3>
+              <p>Choisissez le micro, activez OSC dans VRChat, puis utilisez STT, AI Studio, jeux ou logs selon votre usage.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section reveal">
+          <div class="requirements-grid">
+            <article class="download-card">
+              <span class="meta-label">Ce que vous installez</span>
+              <h3>Une app desktop complete, pas juste un wrapper</h3>
+              <p>
+                Voice Aura embarque un shell Electron, un pipeline speech local, un controle des peripheriques, une integration OSC et un espace AI assez propre pour un usage quotidien.
+              </p>
+              <div class="signal-row">
+                <span class="signal-card"><strong>Desktop:</strong> Electron</span>
+                <span class="signal-card"><strong>STT:</strong> local</span>
+                <span class="signal-card"><strong>Theme:</strong> clair editorial</span>
+              </div>
+            </article>
+
+            <article class="download-card">
+              <span class="meta-label">Lien officiel</span>
+              <h3>Source de telechargement</h3>
+              <p>
+                La page n'ajoute pas de mirroir. Elle envoie vers la release GitHub que vous avez fournie, pour garder un flux de telechargement clair et verifiable.
+              </p>
+            </article>
+          </div>
+        </section>
+
+        <section class="section reveal" id="faq">
+          <div class="section-header">
+            <div>
+              <h2>FAQ rapide</h2>
+            </div>
+            <p>
+              Les questions les plus utiles pour quelqu'un qui tombe sur la page et veut savoir en dix secondes si le logiciel lui convient.
+            </p>
+          </div>
+
+          <div class="faq-grid">
+            <article class="faq-card">
+              <details>
+                <summary>Le telechargement est-il direct ?</summary>
+                <p>Oui. Le bouton pointe vers l'exe de release GitHub, sans etape intermediaire.</p>
+              </details>
+            </article>
+            <article class="faq-card">
+              <details>
+                <summary>Le logiciel fonctionne-t-il sans AI cloud ?</summary>
+                <p>Oui pour le coeur STT local et le flux OSC. Les providers AI restent optionnels selon votre configuration.</p>
+              </details>
+            </article>
+            <article class="faq-card">
+              <details>
+                <summary>La page est-elle autonome ?</summary>
+                <p>Oui. C'est un fichier HTML direct avec CSS et JavaScript integres, sans dependance React.</p>
+              </details>
+            </article>
+            <article class="faq-card">
+              <details>
+                <summary>Pourquoi ce design ?</summary>
+                <p>Pour rester raccord avec le theme Voice Aura: interface claire, accent bleu, forte lisibilite, et surfaces editorialisees plutot que template generique.</p>
+              </details>
+            </article>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="footer-inner">
+          <div>Voice Aura download page · HTML autonome · Windows release directe</div>
+          <div id="footer-status">Pret au telechargement</div>
+        </div>
+      </footer>
+    </div>
+
+    <script>
+      const downloadUrl = "https://github.com/ErrorNoName/VoiceAura/releases/download/v1.1.0/VoiceAura-1.0.0-Setup.exe";
+      const pointerAura = document.querySelector(".pointer-aura");
+      const revealTargets = document.querySelectorAll(".reveal");
+      const progressBar = document.getElementById("progress-bar");
+      const progressValue = document.getElementById("progress-value");
+      const progressLabel = document.getElementById("progress-label");
+      const terminalLog = document.getElementById("terminal-log");
+      const simulateButton = document.getElementById("simulate-install");
+      const counter = document.getElementById("download-counter");
+      const footerStatus = document.getElementById("footer-status");
+      const tiltCard = document.getElementById("tilt-card");
+
+      function fallbackCopy(text) {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.setAttribute("readonly", "");
+        textarea.style.position = "absolute";
+        textarea.style.left = "-9999px";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        textarea.remove();
+      }
+
+      async function copyDownloadLink() {
+        try {
+          if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(downloadUrl);
+          } else {
+            fallbackCopy(downloadUrl);
+          }
+          footerStatus.textContent = "Lien copie";
+          window.setTimeout(() => {
+            footerStatus.textContent = "Pret au telechargement";
+          }, 1800);
+        } catch (error) {
+          footerStatus.textContent = "Impossible de copier le lien";
+        }
+      }
+
+      document.querySelectorAll("#copy-header-link, #copy-hero-link, #copy-download-link").forEach((button) => {
+        button.addEventListener("click", copyDownloadLink);
+      });
+
+      function readLocalCount() {
+        const value = Number(window.localStorage.getItem("voice-aura-download-clicks") || "0");
+        return Number.isFinite(value) ? value : 0;
+      }
+
+      function renderLocalCount() {
+        counter.textContent = `Clics locaux detectes : ${readLocalCount()}`;
+      }
+
+      document.querySelectorAll("[data-download]").forEach((link) => {
+        link.addEventListener("click", () => {
+          const nextCount = readLocalCount() + 1;
+          window.localStorage.setItem("voice-aura-download-clicks", String(nextCount));
+          renderLocalCount();
+          footerStatus.textContent = "Ouverture du telechargement GitHub";
+          window.setTimeout(() => {
+            footerStatus.textContent = "Pret au telechargement";
+          }, 2200);
+        });
+      });
+
+      renderLocalCount();
+
+      const installStates = [
+        { label: "Verification de la release GitHub", percent: 22, lines: ["[network] release GitHub detectee", "[package] setup Windows identifie"] },
+        { label: "Extraction du setup Voice Aura", percent: 48, lines: ["[desktop] shell Electron pret", "[assets] interface Voice Aura chargee"] },
+        { label: "Preparation des modeles locaux", percent: 74, lines: ["[stt] FR/EN marques comme disponibles", "[osc] pont VRChat pret a configurer"] },
+        { label: "Installation terminee, ouverture possible", percent: 100, lines: ["[voice-aura] installation terminee", "[ready] vous pouvez lancer le logiciel"] },
+      ];
+
+      let installIndex = 0;
+      let installTimer = null;
+
+      function renderInstallState(index) {
+        const state = installStates[index];
+        progressBar.style.width = `${state.percent}%`;
+        progressValue.textContent = `${state.percent}%`;
+        progressLabel.textContent = state.label;
+        terminalLog.innerHTML = `
+          <span><span class="accent">[voice-aura]</span> ${state.lines[0]}</span>
+          <span><span class="accent">[system]</span> ${state.lines[1]}</span>
+          <span class="success">[status] ${state.label}</span>
+        `;
+      }
+
+      function playInstallSequence() {
+        if (installTimer) {
+          window.clearInterval(installTimer);
+        }
+
+        installIndex = 0;
+        renderInstallState(installIndex);
+        simulateButton.textContent = "Simulation en cours";
+        simulateButton.disabled = true;
+
+        installTimer = window.setInterval(() => {
+          installIndex += 1;
+
+          if (installIndex >= installStates.length) {
+            window.clearInterval(installTimer);
+            installTimer = null;
+            simulateButton.textContent = "Rejouer";
+            simulateButton.disabled = false;
+            return;
+          }
+
+          renderInstallState(installIndex);
+        }, 1100);
+      }
+
+      simulateButton.addEventListener("click", playInstallSequence);
+
+      if (pointerAura) {
+        window.addEventListener("pointermove", (event) => {
+          pointerAura.style.left = `${event.clientX}px`;
+          pointerAura.style.top = `${event.clientY}px`;
+        });
+
+        window.addEventListener("pointerleave", () => {
+          pointerAura.style.opacity = "0";
+        });
+
+        window.addEventListener("pointerenter", () => {
+          pointerAura.style.opacity = "0.9";
+        });
+      }
+
+      if (tiltCard) {
+        tiltCard.addEventListener("pointermove", (event) => {
+          const bounds = tiltCard.getBoundingClientRect();
+          const offsetX = (event.clientX - bounds.left) / bounds.width - 0.5;
+          const offsetY = (event.clientY - bounds.top) / bounds.height - 0.5;
+          tiltCard.style.transform = `perspective(1400px) rotateX(${(-offsetY * 7).toFixed(2)}deg) rotateY(${(offsetX * 9).toFixed(2)}deg) translateY(-4px)`;
+        });
+
+        tiltCard.addEventListener("pointerleave", () => {
+          tiltCard.style.transform = "perspective(1400px) rotateX(0deg) rotateY(0deg) translateY(0px)";
+        });
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+            }
+          });
+        },
+        { threshold: 0.14 },
+      );
+
+      revealTargets.forEach((target) => observer.observe(target));
+    </script>
+  </body>
+</html>
